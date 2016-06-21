@@ -1,0 +1,55 @@
+<project name="JunitTest" default="test" basedir=".">
+   <property name="testdir" location="test" />
+   <property name="srcdir" location="src" />
+   <property name="test.reports" value="${basedir}/reports/"/>
+   <property name="full-compile" value="true" />
+   <path id="classpath.base"/>
+   <path id="classpath.test">
+      <pathelement location="/lib/junit-4.10.jar" />
+      <pathelement location="${testdir}" />
+      <pathelement location="${srcdir}" />
+      <path refid="classpath.base" />
+   </path>
+   <target name="clean" >
+      <delete verbose="${full-compile}">
+         <fileset dir="${testdir}" includes="**/*.class" />
+      </delete>
+   </target>
+   <target name="compile" depends="clean">
+      <javac srcdir="${srcdir}" destdir="${testdir}" 
+         verbose="${full-compile}">
+         <classpath refid="classpath.test"/>
+      </javac>
+   </target>
+   <target name="test" depends="compile">
+      <junit>
+         <classpath refid="classpath.test" />
+         <formatter type="brief" usefile="false" />
+         <test name="TestMessageUtil" />
+      </junit>
+
+   </target>
+
+
+<target name="test-html" depends="compile">
+ <junit fork="yes" printsummary="no" haltonfailure="no">
+  <batchtest fork="yes" todir="${test.reports}" >
+   <fileset dir="${testdir}">
+    <include name="**/*Test*.class" />
+   </fileset>
+  </batchtest>
+  <formatter type="xml" />
+  <classpath id="test.classpath">
+   <pathelement location="lib\junit4.8.1\junit4.8.1"/>
+  </classpath>
+ </junit>
+ <junitreport todir="${test.reports}">
+  <fileset dir="${test.reports}">
+   <include name="TEST-*.xml" />
+  </fileset>
+  <report todir="${test.reports}" />
+ </junitreport>
+</target>
+
+
+</project>

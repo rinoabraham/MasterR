@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+   <project name="JunitTest" default="junitreport" basedir=".">
+   <property name="testdir" location="test" />
+   <property name="srcdir" location="src" />
+   <property name="full-compile" value="true" />
+   <property name="report.dir"  value="${testdir}/junitreport"/>
+ 
+
+   <path id="classpath.base"/>
+   <path id="classpath.test">
+      <pathelement location="/lib/junit-4.10.jar" />
+      <pathelement location="${testdir}" />
+      <pathelement location="${srcdir}" />
+      <path refid="classpath.base" />
+   </path>
+   <target name="clean" >
+      <delete verbose="${full-compile}">
+         <fileset dir="${testdir}" includes="**/*.class" />
+      </delete>
+   </target>
+   <target name="compile" depends="clean">
+      <javac srcdir="${srcdir}" destdir="${testdir}" 
+         verbose="${full-compile}">
+         <classpath refid="classpath.test"/>
+      </javac>
+   </target>
+   <target name="test" depends="compile">
+      <junit>
+         <classpath refid="classpath.test" />
+         <formatter type="brief" usefile="false" />
+         <test name="TestMessageUtil" />
+      </junit>
+   </target>
+    
+<target name="junit" depends="compile"> 
+
+         <mkdir dir="${report.dir}"/>
+        <junit printsummary="yes">
+            <classpath> <pathelement location="${test}"/> 
+            </classpath> <formatter type="xml" />       
+            
+          
+            <batchtest fork="yes" todir="${report.dir}">
+                <fileset dir="${srcdir}" includes="*.java"/>
+            </batchtest>
+        </junit>
+    </target>
+    
+    <target name="junitreport" depends="junit">
+        <junitreport todir="${report.dir}">
+            <fileset dir="${report.dir}" includes="*.xml"/>
+             <report format="frames" todir="${report.dir}"/>
+           
+          </junitreport>
+    </target>
+
+
+
+
+
+
+
+
+</project>
